@@ -20,7 +20,7 @@ Smart parameterization/initialization of the system matrices make the LRU block 
 
 LRU units are typically organized in a deep architecture structured like:
 
-<img src="architecture/lru_architecture.png"  width="500">
+<img src="doc/paper/figures/architecture/lru_architecture.png"  width="500">
 
 ## Model order reduction and regularization
 We use Model Order Reduction (MOR) to reduce the state dimensionality of Deep LRU architectures. We implement plain truncation and singular value perturbation for the system either in modal or in balanced form, resulting in the combinations:
