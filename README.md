@@ -8,22 +8,32 @@ by Marco Forgione, Manas Mejari, and Dario Piga.
 The Linear Recurrent Unit (LRU) is a sequence-to-sequence model defined by a linear dynamical system and implemented in state-space form as:
 ```math
 \begin{align}
-x_{k} = Ax_{x-1} + B u_k\\
+x_{k} = A_dx_{x-1} + B u_k\\
 y_k = \mathcal{R}[C x_k] + D u_k,
 \end{align}
 ```
-where $A$ is diagonal and complex-valued; $B, C$ are full complex-valued; $D$ is full real-valued; and $\mathcal{R}[\cdot]$ denotes the real part of its argument.
+where $A_d$ is diagonal and complex-valued; $B, C$ are full complex-valued; $D$ is full real-valued; and $\mathcal{R}[\cdot]$ denotes the real part of its argument.
 
-Smart parameterization/initialization of the system matrices make the LRU block easy to train numerically. Moreover, the use of [parallel scan algorithms](https://en.wikipedia.org/wiki/Prefix_sum) makes execution extremely fast on modern hardware. For more  details, read the original LRU paper.
+Smart parameterization/initialization of the system matrices make the LRU block easy to train numerically. Moreover, the use of [parallel scan algorithms](https://en.wikipedia.org/wiki/Prefix_sum) makes execution extremely fast on modern hardware. For more  details, read the original [LRU paper](https://arxiv.org/abs/2303.06349) from Deep Mind.
 
 ## Deep LRU Architecture
 
-LRU units are typically organized in a deep LRU architecture like:
+LRU units are typically organized in a deep architecture structured like:
 
 <img src="architecture/lru_architecture.png"  width="500">
 
 ## Model order reduction and regularization
-Model Order Reduction (MOR) is used in this paper to reduce the state dimensionality of Deep LRU architectures. Furthermore, regularization techniques promoting parsimonious representations are introduced.
+We use Model Order Reduction (MOR) to reduce the state dimensionality of Deep LRU architectures. We implement plain truncation and singular value perturbation for the system either in modal or in balanced form, resulting in the combinations:
+* Balanced Truncation (BT)
+* Balanced Singular Perturbation (BSP)
+* Modal Truncation (MT)
+* Modal Singular Perturbation (MSP)
+
+We intruduce regularization techniques that promote parsimonious state-space representations. We introduce the following regularizers:
+* LASSO on the LRU's eigenvalues magnitude
+* Hankel nuclear norm
+
+We show that, when training is performed with these regularizers, the subsequent MOR step is significantly more effective.
 
 # Main files
 
@@ -64,13 +74,7 @@ If you find this project useful, we encourage you to:
 ```
 @article{forgione2023from,
   author={Forgione, Marco and Mejari, Manas, and Piga, Dario},
-  journal={IEEE Control Systems Letters}, 
-  title={From System Models to Class Models:
-   An In-Context Learning Paradigm}, 
-  year={2023},
-  volume={7},
-  number={},
-  pages={3513-3518},
-  doi={10.1109/LCSYS.2023.3335036}
+  title={Model order reduction of deep structured state-space models: A system-theoretic approach}, 
+  year={2024},
 }
 ```
