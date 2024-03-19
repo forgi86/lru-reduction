@@ -29,7 +29,7 @@ We use Model Order Reduction (MOR) to reduce the state dimensionality of Deep LR
 * Modal Truncation (MT)
 * Modal Singular Perturbation (MSP)
 
-We intruduce regularization techniques that promote parsimonious state-space representations. We introduce the following regularizers:
+We intruduce regularization techniques that promote parsimonious state-space representations, in particular:
 * LASSO on the LRU's eigenvalues magnitude
 * Hankel nuclear norm
 
