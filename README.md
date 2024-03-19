@@ -33,9 +33,11 @@ We intruduce regularization techniques that promote parsimonious state-space rep
 * LASSO ($\ell_1$-norm) of the eigenvalues magnitude
 * Hankel nuclear norm
 
-We show that, when training is performed with these regularizers, the subsequent MOR step is significantly more effective.
+## Results
+We show on the F-16 ground vibration dataset that, when training is performed with these regularizers, the subsequent MOR step is significantly more effective.
+<img src="doc/paper/figures/F16/MOR_regularization.png"  width="600">
 
-# Main files
+## Main files
 
 The main files are:
 
@@ -52,7 +54,7 @@ python train.py +experiment=larg_reg_hankel
 
 The configuration files defining the experiments are in the [conf](examples/f16/conf) folder.
 
-# Software requirements
+## Software requirements
 Experiments were performed on a Python 3.11 conda environment with:
 
  * numpy
@@ -62,7 +64,7 @@ Experiments were performed on a Python 3.11 conda environment with:
  * pytorch (v2.2.1)
  
 
-# Citing
+## Citing
 
 If you find this project useful, we encourage you to:
 
