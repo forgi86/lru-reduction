@@ -8,11 +8,11 @@ by Marco Forgione, Manas Mejari, and Dario Piga.
 The Linear Recurrent Unit (LRU) is a sequence-to-sequence model defined by a linear dynamical system and implemented in state-space form as:
 ```math
 \begin{align}
-x_{k} = A_dx_{x-1} + B u_k\\
+x_{k} = A_Dx_{x-1} + B u_k\\
 y_k = \Re[C x_k] + D u_k,
 \end{align}
 ```
-where $A_d$ is diagonal and complex-valued; $B, C$ are full complex-valued; $D$ is full real-valued; and $\Re[\cdot]$ denotes the real part of its argument.
+where $A_D$ is diagonal and complex-valued; $B, C$ are full complex-valued; $D$ is full real-valued; and $\Re[\cdot]$ denotes the real part of its argument.
 
 Smart parameterization/initialization of the system matrices make the LRU block easy to train numerically. Moreover, the use of [parallel scan algorithms](https://en.wikipedia.org/wiki/Prefix_sum) makes execution extremely fast on modern hardware. For more  details, read the original [LRU paper](https://arxiv.org/abs/2303.06349) from Deep Mind.
 
