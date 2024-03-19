@@ -1,0 +1,24 @@
+Linear $n_u \rightarrow d_{\rm model}$
+u_1 \qquad u_2 \qquad \dots \qquad u_N
+
+U_1 \qquad U_2 \qquad \dots \qquad U_N
+
+\begin{center}
+Static non-linearity $f(\cdot)$:\\
+MLP/GLU
+\end{center}
+
+Layer/Batch Normalization
+
+LRU:
+\begin{align}
+x_{k+1} &= A_D x_k + B u_{k+1}\\
+y_k &= \Re[C x_k] + D u_k
+\end{align}
+
+\overbrace{\qquad \qquad \qquad \qquad} ^{n_{\rm layers} \times}
+
+
+Y_1 \qquad Y_2 \qquad \dots \qquad Y_N
+
+\hat y_1 \qquad \hat y_2 \qquad \dots \qquad \hat y_N
