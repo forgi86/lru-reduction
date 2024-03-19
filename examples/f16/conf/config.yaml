@@ -1,0 +1,25 @@
+# model
+d_model: 30
+d_state: 60
+n_layers: 2
+ff: "MLP"
+
+# sequences
+seq_len: 5000
+skip: 200
+
+# regularization:
+reg_type: "none" # "hankel", "hankel_cc"
+reg_lambda: 0.00
+
+# optimization
+batch_size: 32
+lr: 1e-4
+epochs: 10
+
+# compute
+device: "cuda:0"
+
+# misc
+log_wandb: false
+out_name: "ckpt" # ckpt.pt

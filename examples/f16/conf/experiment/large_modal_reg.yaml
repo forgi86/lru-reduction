@@ -1,0 +1,18 @@
+# @package _global_
+
+# model
+d_model: 50
+d_state: 100
+n_layers: 6
+ff: "MLP"
+
+# regularization:
+reg_type: "modal" # "hankel", "hankel_cc"
+reg_lambda: 1e-2
+
+# compute
+device: "cuda:1"
+
+# misc
+log_wandb: true
+out_name: "ckpt_large_reg_modal" 

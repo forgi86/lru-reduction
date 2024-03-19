@@ -1,0 +1,13 @@
+# @package _global_
+
+d_model: 10
+d_state: 20
+n_layers: 3
+ff: "MLP"
+
+# regularization:
+reg_lambda: 1e-2
+
+# misc
+log_wandb: true
+out_name: "ckpt_small_reg" 

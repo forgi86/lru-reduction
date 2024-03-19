@@ -1,0 +1,10 @@
+# @package _global_
+
+d_model: 10
+d_state: 20
+n_layers: 3
+ff: "MLP"
+
+# misc
+log_wandb: true
+out_name: "ckpt_small_no_reg" 
