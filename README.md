@@ -30,7 +30,7 @@ We use Model Order Reduction (MOR) to reduce the state dimensionality of Deep LR
 * Modal Singular Perturbation (MSP)
 
 We intruduce regularization techniques that promote parsimonious state-space representations, in particular:
-* LASSO on the LRU's eigenvalues magnitude
+* LASSO ($\ell_1$-norm) of the eigenvalues magnitude
 * Hankel nuclear norm
 
 We show that, when training is performed with these regularizers, the subsequent MOR step is significantly more effective.
