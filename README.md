@@ -35,6 +35,7 @@ We intruduce regularization techniques that promote parsimonious state-space rep
 
 ## Results
 We show on the F-16 ground vibration dataset that, when training is performed with these regularizers, the subsequent MOR step is significantly more effective.
+
 <img src="doc/paper/figures/F16/MOR_regularization.png"  width="600">
 
 ## Main files
