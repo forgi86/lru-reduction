@@ -23,7 +23,7 @@ LRU units are typically organized in a deep architecture structured like:
 <img src="doc/paper/figures/architecture/lru_architecture.png"  width="500">
 
 ## Model order reduction and regularization
-We use Model Order Reduction (MOR) to reduce the state dimensionality of Deep LRU architectures. We implement plain state-space truncation and singular value perturbation for the system either in modal or in balanced form, resulting in the combinations:
+We use Model Order Reduction (MOR) to reduce the state dimensionality of deep LRU architectures. We implement state-space truncation and singular value perturbation for the system either in modal or in balanced form, resulting in the combinations:
 * Balanced Truncation (BT)
 * Balanced Singular Perturbation (BSP)
 * Modal Truncation (MT)
