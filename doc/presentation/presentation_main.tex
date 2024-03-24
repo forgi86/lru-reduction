@@ -1,0 +1,403 @@
+\documentclass{beamer}
+\usefonttheme[onlymath]{serif}
+\input{preamble}
+\definecolor{darkgreen}{RGB}{20,150,50}
+\definecolor{acq}{RGB}{119, 172, 48}
+\definecolor{true}{RGB}{162, 20, 47}
+\definecolor{surr}{RGB}{0, 114, 189}
+
+\usepackage{listings}
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttb\tiny,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\tiny\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false,            %
+numberstyle=\footnotesize,
+}}
+
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+\newcommand{\book}{\includegraphics[width=10pt]{img/proceeding-logo.jpg}}
+\newcommand{\github}{\includegraphics[width=10pt]{img/github-logo.jpg}}
+
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+\usepackage{caption}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Deep structured state-space models}
+Growing interest within the machine-learning community. They dominate \structure{long-range} sequence learning where Transformers suffer the $\mathcal{O}(N^2)$ scaling.
+\vskip 1em 
+
+\begin{itemize}
+%\item They dominate \structure{very long-range} sequence learning tasks where Transformers suffer the $\mathcal{O}(T^2)$ scaling
+\item Interconnection of \structure{linear dynamical} systems with \structure{static non-linearities} (and Normalization layers, skip connection, ...)
+\item The architecture should \structure{ring a bell} to sysid researchers.
+\end{itemize}
+
+\vskip 1em
+The classic \structure{block-oriented} modeling framework.
+\begin{columns}
+\column{.2\textwidth}
+ \begin{figure}
+ \footnotesize Wiener
+ \vskip .5em
+ \includegraphics[width=\textwidth]{img/wiener.pdf}
+ \end{figure}
+\column{.2\textwidth}
+ \begin{figure}
+ \footnotesize Hammerstein
+ \vskip .5em
+ \includegraphics[width=\textwidth]{img/hammer.pdf}
+ \end{figure}
+ \column{.3\textwidth}
+ \begin{figure}
+ \footnotesize Wiener-Hammerstein
+ \vskip .5em
+ \includegraphics[width=\textwidth]{img/wiener_hammerstein.pdf}
+ \end{figure}
+\end{columns}
+%\includegraphics[scale=.2]{img/generic_layer.pdf}
+\begin{itemize}
+ 	\item[\book]
+ 		\begin{tiny}
+ 	\structure{E.W. Bai, F. Giri}
+ 									Block-oriented nonlinear system identification. \emph{Springer}, 2010
+ 		\end{tiny}					
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The dynoNet architecture}
+LTI blocks compatible for deep learning in our previous \structure{dynoNet} architecture
+\vskip 1em
+\begin{columns}
+ \column{.5\textwidth}
+ \centering
+ \Name \ architecture
+\begin{figure}
+ \vskip 0em
+ \includegraphics[width=.8\textwidth]{img/generic_dynonet.pdf}
+\end{figure}
+ \column{.5\textwidth}
+ \centering
+ \vskip -.5em
+ Python code
+  \begin{tiny}
+\begin{lstlisting}[language=python]
+
+
+G1 = LinearMimo(1,  4, ...) # a SIMO tf
+F = StaticNonLin(4, 3, ...) # a static NN
+G2 = LinearMimo(3, 1, ...) # a MISO tf
+G3 = LinearSiso(1, 1, ...) # a SISO tf
+ 
+def model(in_data):  
+    y1 = G1(in_data)
+    z1 = F(y1) 
+    y2 = G2(z1)
+    out = y2 + G3(in_data)
+    
+\end{lstlisting}
+\end{tiny}
+\end{columns}
+\vskip 2em
+%It enables training of arbitrary linear/non-linear combinations.
+% \vskip 1em 
+
+\begin{itemize}
+ 	\item[\book]
+ 		\begin{tiny}
+ 	\structure{M. Forgione and D.Piga.}
+ 									\emph{dynoNet}: A Neural Network architecture for learning dynamical systems.
+ 									\vskip -1em
+ 									\emph{International Journal of Adaptive Control and Signal Processing}, 2021
+ 		\end{tiny}
+\end{itemize}
+Differentiable transfer functions now available in the \href{https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html}{\texttt{torchaudio}} library.
+\begin{itemize}
+ 	\item[\book]{\begin{tiny}https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html\end{tiny}}					
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Deep Structured State-Space Model Architecture}
+%Very close to dynoNet. Main differences:
+\begin{itemize}
+\item Architecture with normalization layers, skip connections, (dropout). 
+\item State-space parameterization of the linear dynamical system
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=.5]{img/s4_architecture.pdf}
+\end{figure}
+Several strategies to make the LTI state-space system \structure{fast and efficient}.
+\begin{itemize}
+ 	\item[\book]
+ 		\begin{tiny}
+ 	\structure{A. Gu, K. Goel, C. R\'e.}
+ 									Efficiently Modeling Long Sequences with Structured State Spaces. \emph{ICLR}, 2022		
+ 		\end{tiny}		
+\end{itemize}
+\pause
+\vskip 1em
+Our idea: bring in \structure{model order reduction} to simplify these architectures!
+\end{frame}
+
+
+\begin{frame}{Deep Linear Recurrent Units}
+We consider the deep LRU architecture recently introduced by DeepMind:
+\begin{itemize}
+ 	\item[\book]
+ 		\begin{tiny}
+ 	\structure{A. Orvieto et al.}
+ 									Resurrecting Recurrent Neural Networks for Long Sequences. \emph{ICML}, 2023 				
+ 		\end{tiny}		
+\end{itemize}
+%\vskip 1em
+\begin{columns}
+\column{.25\textwidth}
+\begin{figure}
+\includegraphics[scale=.5]{img/lru_architecture.pdf}
+\end{figure}
+\column{.75\textwidth}
+\begin{itemize}
+\item Discrete-time, MIMO LTI system
+\item Complex diagonal state-transition matrix $A_D$
+\item Stable parameterization
+\item Implementation with either:
+\begin{itemize}
+\item $\mathcal{O}(N)$ sequential ops (standard recursion) 
+\item $N$ \structure{parallel} jobs, $\mathcal{O}(\log N)$ ops each \structure{(parallel scan)}
+\end{itemize}
+\item SOTA on long-range sequences
+\end{itemize}
+\end{columns}
+\vskip 1em
+
+\pause
+Our idea: further exploit the \structure{diagonal structure} for model order reduction.
+\end{frame}
+
+\begin{frame}{Model Order Reduction}
+Consider a LTI state-space system partitioned as:
+\begin{align*}\label{eq:ss_partitioned_a}
+    \begin{bmatrix}
+    x_{1}(k)\\
+    x_{2}(k)
+    \end{bmatrix}
+    &=
+    \begin{bmatrix}A_{11} & A_{12} \\ A_{21} & A_{22} \end{bmatrix}     
+    \begin{bmatrix}
+    x_{1}(k-1)\\
+    x_{2}(k-1)
+    \end{bmatrix} + \begin{bmatrix}B_1\\B_2 \end{bmatrix} u(k), \\
+    y(k) &= \begin{bmatrix}C_1\;\; C_2\end{bmatrix} \begin{bmatrix}x_{1}(k)\\ x_{2}(k) \end{bmatrix} + D u(k),
+\end{align*}
+Reduction is often applied to systems in 
+\begin{itemize}
+\item Modal form ($A$ diagonal, states sorted from slowest to fastest)
+\item Balanced form (states sorted for decreasing Hankel singular values)
+\end{itemize}
+\pause
+The states $x_2$ can be removed by:
+\begin{itemize}
+\item Truncation $\Rightarrow$ keep $(A_{11}, B_{1}, C_{1}, D)$
+\item Singular perturbation $\Rightarrow$ solve $x_{2}(k) = x_{2}(k-1)$
+\end{itemize}
+\vskip 1em
+\pause
+We tested all combinations for LRU simplification: MT, MSP, BT, BSP.
+\end{frame}
+
+\begin{frame}{Regularization}
+Regularization introduced to enhance the MOR:
+\begin{align*}
+\hat{\theta} =  \arg\min_{\theta \in \Theta}  & \frac{1}{N}\sum_{k=1}^N \left(y_k - \hat{y}_k(\theta) \right)^2 +  \gamma \mathcal{R}(\theta),  
+\end{align*}
+
+\begin{columns}
+\column{.48\textwidth}
+\begin{block}{Modal $\ell_1$}
+\begin{equation*}
+    \mathcal{R}(\theta) = \sum_{j=1}^{n_x} |\lambda_j|
+\end{equation*}
+\begin{itemize}
+\item Push some modes towards 0
+%\item Rationale: fast modes can often be neglected
+\item Tailored for modal reduction MT/MSP
+%\item Directly applicable
+\end{itemize}
+
+\end{block}
+\column{.48\textwidth}
+\begin{block}{Hankel nuclear norm (HNN)} 
+\begin{equation*}
+	\mathcal{R}(\theta) = \sum_{j=1}^{n_x} \sigma_j
+\end{equation*}
+\begin{itemize}
+\item Push some HSV  towards 0
+\item Tailored for balanced reduction BT/BSP
+%\item Directly applicable
+\end{itemize}
+\end{block}
+\end{columns}
+\begin{itemize}
+\vskip 1em
+\item Modal $\ell_1$ efficient ($\lambda_j$ are on the diagonal)
+\item HNN also efficient exploiting diagonal $A_D$ for HSV computation
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Example}
+
+Experiments on the F16 ground vibration \href{https://research.tue.nl/en/datasets/f-16-aircraft-benchmark-based-on-ground-vibration-test-data}{benchmark}. Deep LRU with
+\vskip 1em
+\begin{columns}
+\column{.6\textwidth}
+\begin{itemize}
+ \item $n_{\rm layers}=6$  layers
+ \item $n_x=100$ states per layer
+ \item $d_{\rm model}=50$ units per layer
+ \item Layer Normalization
+ \item MLP non-linearity
+\end{itemize}
+\column{.4\textwidth}
+\includegraphics[scale=.5]{img/lru_architecture.pdf}
+\end{columns}
+\vskip .2em
+Results on test set \texttt{FullMSine\_Level6\_Validation}
+\begin{table}[ht]
+\centering
+%\captionsetup{justification=centering} % Centering captions
+\small % Reduced font size
+\setlength{\tabcolsep}{4pt} % Reduced column padding
+\adjustbox{scale=0.7}{
+\begin{tabular}{@{}l*{9}{c}@{}} % Adjusting column alignment
+\toprule
+\multirow{2}{*}{Regularization} & \multicolumn{3}{c}{Channel 1} & \multicolumn{3}{c}{Channel 2} & \multicolumn{3}{c}{Channel 3} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+& {\emph{fit}} & {RMSE} & {NRMSE} & {\emph{fit}} & {RMSE} & {NRMSE} & {\emph{fit}} & {RMSE} & {NRMSE} \\
+\midrule
+No reg. & 86.5 & 0.180 & 0.134 & 90.0 & 0.167 & 0.099  & 76.2 & 0.368 & 0.237 \\
+Modal $\ell_1$ & 85.4 & 0.195 & 0.145 & 89.8 & 0.171 & 0.102 & 74.5 & 0.395 & 0.254 \\
+Hankel norm & 85.8 & 0.190 & 0.142 & 89.0 & 0.185 & 0.110 & 75.5 & 0.379 & 0.245 \\
+\bottomrule
+\end{tabular}
+}
+%\caption{Performance of the SSM trained with different regularization methods.}
+\end{table}
+%\vskip .2em
+\pause
+In line with literature. Regularization has a large effect on the LTI blocks!
+\end{frame}
+
+\begin{frame}
+\begin{figure}[ht]
+    \centering
+    No regularization: eigenvalues magnitude (top) and HSV (bottom)\\
+    %\includegraphics[scale=.99]{figures/F16/ckpt_large_no_reg_eigs_complex.pdf}
+    %\vskip -1em
+    \includegraphics[scale=.5]{img/ckpt_large_no_reg_eigs_abs.pdf}
+    \vskip -.5em
+    \includegraphics[scale=.5]{img/ckpt_large_no_reg_hankel.pdf}
+    % \caption{No regularization: complex eigenvalues in the unit circle (top), eigenvalues magnitude (middle) and Hankel singular values (bottom).}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    Modal $\ell_1$ regularization: eigenvalues magnitude (top) and HSV (bottom)\\
+    %\includegraphics[scale=.99]{figures/F16/ckpt_large_no_reg_eigs_complex.pdf}
+    %\vskip -1em
+    \includegraphics[scale=.5]{img/ckpt_large_reg_modal_eigs_abs.pdf}
+    \vskip -.5em
+    \includegraphics[scale=.5]{img/ckpt_large_reg_modal_hankel.pdf}
+    % \caption{No regularization: complex eigenvalues in the unit circle (top), eigenvalues magnitude (middle) and Hankel singular values (bottom).}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[ht]
+    \centering
+    No regularization: eigenvalues magnitude (top) and HSV (bottom)\\
+    %\includegraphics[scale=.99]{figures/F16/ckpt_large_no_reg_eigs_complex.pdf}
+    %\vskip -1em
+    \includegraphics[scale=.5]{img/ckpt_large_no_reg_eigs_abs.pdf}
+    \vskip -.5em
+    \includegraphics[scale=.5]{img/ckpt_large_no_reg_hankel.pdf}
+    % \caption{No regularization: complex eigenvalues in the unit circle (top), eigenvalues magnitude (middle) and Hankel singular values (bottom).}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    HNN regularization: eigenvalues magnitude (top) and HSV (bottom)\\
+    %\includegraphics[scale=.99]{figures/F16/ckpt_large_no_reg_eigs_complex.pdf}
+    %\vskip -1em
+    \includegraphics[scale=.5]{img/ckpt_large_reg_hankel_eigs_abs.pdf}
+    \vskip -.5em
+    \includegraphics[scale=.5]{img/ckpt_large_reg_hankel_hankel.pdf}
+    % \caption{No regularization: complex eigenvalues in the unit circle (top), eigenvalues magnitude (middle) and Hankel singular values (bottom).}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Model Order Reduction}
+Performance of all regularizers/model order reduction techniques assessed.
+\vskip 2em
+\begin{columns}
+\column{.5\textwidth}
+\begin{table}%[htbp]
+	\small
+	\adjustbox{scale=0.7}{
+    \centering
+    \begin{tabular}{@{}lllll@{}}
+    \toprule
+    & \multicolumn{4}{c}{Truncation Method} \\ \cmidrule(lr){2-5}
+    Regularization Method & BT & BSP & MT & MSP \\ \midrule
+    No Regularization & 28 & 43 & 3 & 35 \\
+    Modal $\ell_1$& 56 & 73 & 0 & \textbf{91} \\
+    Hankel nuclear norm& 89 & \textbf{91} & 18 & 76 \\ \bottomrule
+    \end{tabular}
+}
+\caption{\small Number of states eliminated s.t. performance decrease is less than 1\%}
+\end{table}
+\column{.5\textwidth}
+\includegraphics[width=\columnwidth]{img/MOR_regularization.png}
+\end{columns}
+\vskip 1em
+\begin{itemize}
+\item Best results with Hankel nuclear norm + balanced singular perturbation and modal $\ell_1$ + modal singular perturbation 
+\item Without regularization, MOR is significantly less effective
+\end{itemize}
+\end{frame}
+
+\begin{frame}{}{}
+\begin{center}
+\huge{\structure{Thank you.\\ Questions?}}\\
+\vskip 1em
+\begin{small}
+\texttt{marco.forgione@idsia.ch}
+\end{small}
+\end{center}
+\end{frame}
+%\appendix
+%\newcounter{finalframe}
+%\setcounter{finalframe}{\value{framenumber}}
+%\setcounter{framenumber}{\value{finalframe}}
+	
+\end{document}
