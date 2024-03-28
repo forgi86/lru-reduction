@@ -1,0 +1,8 @@
+torch
+hydra-core
+wandb
+tqdm
+IPython
+jax
+pytorch-ident
+scikit-learn
