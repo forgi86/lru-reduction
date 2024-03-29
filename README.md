@@ -5,7 +5,7 @@ by Marco Forgione, Manas Mejari, and Dario Piga.
 
 
 ## Linear Recurrent Unit
-The Linear Recurrent Unit (LRU) is a sequence-to-sequence model defined by a linear dynamical system and implemented in state-space form as:
+The Linear Recurrent Unit (LRU) is a sequence-to-sequence model defined by a linear time-invariant (LTI) dynamical system and implemented in state-space form as:
 ```math
 \begin{align}
 x_{k} = A_Dx_{x-1} + B u_k\\
@@ -18,9 +18,13 @@ Smart parameterization/initialization of the system matrices make the LRU block 
 
 ## Deep LRU Architecture
 
-LRU units are typically organized in a deep architecture structured like:
+LRU blocks are organized in a deep LRU architecture which looks like:
 
 <img src="doc/paper/figures/architecture/lru_architecture.png"  width="500">
+
+This Norm-Recurrence-StaticNL-Skip architecture is close to the one introduced in the [S4 paper](https://arxiv.org/abs/2111.00396), except for inner details of the LTI block.
+It has also analogies with [dynoNet](https://arxiv.org/abs/2006.02250), where LTI blocks described in transfer-function form are interleaved with static non-lineatities.
+Finally, it is also somewhat related to a [decoder-only Transformer](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf), with information shared across the time steps by an LTI system instead of a causal attention layer.
 
 ## Model order reduction and regularization
 We use Model Order Reduction (MOR) to reduce the state dimensionality of deep LRU architectures. We implement state-space truncation and singular value perturbation for the system either in modal or in balanced form, resulting in the combinations:
