@@ -1,6 +1,6 @@
 # Model order reduction of deep structured state-space models: A system-theoretic approach
 
-This repository contains the Python code to reproduce the results of the paper [Model order reduction of deep structured state-space models: A system-theoretic approach](http://arxiv.org/abs/2308.13380)
+This repository contains the Python code to reproduce the results of the paper [Model order reduction of deep structured state-space models: A system-theoretic approach](https://arxiv.org/abs/2403.14833)
 by Marco Forgione, Manas Mejari, and Dario Piga.
 
 
@@ -77,11 +77,12 @@ If you find this project useful, we encourage you to:
 
 
 
-* Cite the [paper](https://arxiv.org/abs/2308.13380) 
+* Cite the [paper](https://arxiv.org/abs/2403.14833) 
 ```
-@article{forgione2023from,
-  author={Forgione, Marco and Mejari, Manas, and Piga, Dario},
-  title={Model order reduction of deep structured state-space models: A system-theoretic approach}, 
-  year={2024},
+@article{forgione2024model,
+  title={Model order reduction of deep structured state-space models: A system-theoretic approach},
+  author={Forgione, Marco and Mejari, Manas and Piga, Dario},
+  journal={arXiv preprint arXiv:2403.14833},
+  year={2024}
 }
 ```
