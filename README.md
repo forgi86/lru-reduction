@@ -23,7 +23,7 @@ LRU blocks are organized in a deep LRU architecture which looks like:
 <img src="doc/paper/figures/architecture/lru_architecture.png"  width="500">
 
 This Norm-Recurrence-StaticNL-Skip architecture is close to the one introduced in the [S4 paper](https://arxiv.org/abs/2111.00396), except for inner details of the LTI block.
-It has also analogies with [dynoNet](https://arxiv.org/abs/2006.02250), where LTI blocks described in transfer-function form are interleaved with static non-lineatities.
+It has also analogies with [dynoNet](https://arxiv.org/abs/2006.02250), where LTI blocks described in transfer-function form are interleaved with static non-linearities.
 Finally, it is also somewhat related to a [decoder-only Transformer](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf), with information shared across the time steps by an LTI system instead of a causal attention layer.
 
 ## Model order reduction and regularization
