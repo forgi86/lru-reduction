@@ -133,7 +133,8 @@ def model(in_data):
  									\emph{International Journal of Adaptive Control and Signal Processing}, 2021
  		\end{tiny}
 \end{itemize}
-Differentiable transfer functions are now also in the \href{https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html}{\texttt{torchaudio}} library.
+\structure{Differentiable transfer functions} are now also in the \href{https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html}{\texttt{torchaudio}} library. \\
+Our paper included in the documentation of {\texttt{torchaudio.lfilter}}.
 \begin{itemize}
  	\item[\book]{\begin{tiny}https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html\end{tiny}}					
 \end{itemize}
@@ -148,7 +149,7 @@ Differentiable transfer functions are now also in the \href{https://pytorch.org/
 \begin{figure}
 \includegraphics[scale=.5]{img/s4_architecture.pdf}
 \end{figure}
-Several strategies to make the LTI state-space system \structure{fast and efficient}.
+Several strategies to make the LTI system simulation \structure{fast and efficient}.
 \begin{itemize}
  	\item[\book]
  		\begin{tiny}
@@ -172,7 +173,7 @@ We consider the deep LRU architecture recently introduced by DeepMind:
  		\end{tiny}		
 \end{itemize}
 %\vskip 1em
-\begin{columns}
+\begin{columns}[t]
 \column{.25\textwidth}
 \begin{figure}
 \includegraphics[scale=.5]{img/lru_architecture.pdf}
@@ -180,8 +181,11 @@ We consider the deep LRU architecture recently introduced by DeepMind:
 \column{.75\textwidth}
 \begin{itemize}
 \item Discrete-time, MIMO LTI system
-\item Complex diagonal state-transition matrix $A_D$
-\item Stable parameterization
+\item Complex diagonal state-transition matrix $A_D$:
+\vskip -0.5em
+$$A_D = \textrm{diag}(\lambda_1, \lambda_2, \dots, \lambda_{n_x})$$
+\vskip -1.5em
+\item Stable parameterization with $|\lambda_i| < 1$
 \item Implementation with either:
 \begin{itemize}
 \item $\mathcal{O}(N)$ sequential ops (standard recursion) 
@@ -227,6 +231,22 @@ The states $x_2$ can be removed by:
 We tested all combinations for LRU simplification: MT, MSP, BT, BSP.
 \end{frame}
 
+\begin{frame}{Model Order Reduction}
+\begin{itemize}
+\item Modal reduction is almost directly applicable to the LRU, which is already in modal (diagonal) form.
+\begin{enumerate}
+\item Sort system $(A_D, B, C, D)$ for decreasing eigenvalues magnitude
+\item Eliminate fastest states
+\end{enumerate}
+\item Balanced reduction techniques require a \structure{three-step} procedure:
+\begin{enumerate}
+\item Balance $(A_D, B, C, D)$ to a non-diagonal $(A_b, B_b, C_d, D)$
+\item Reduce $(A_b, B_b, C_b, D)$ to a non-diagonal $(A_r, B_r, C_r, D)$
+\item Diagonalize $(A_r, B_r, C_r, D)$ to fit the LRU structure
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Regularization}
 Regularization introduced to enhance the MOR:
 \begin{align*}
@@ -265,6 +285,19 @@ Regularization introduced to enhance the MOR:
 \item HNN also efficient exploiting diagonal $A_D$ for HSV computation
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Hankel nuclear norm minimization}
+Let us denote as $G$ and $G_r$ the original and reduced system.\\
+\begin{itemize}
+\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of $G$ (minimium realization order)
+\item The choice of HNN regularization is justified by the bound:
+\begin{equation*}
+\norm{G-G_r}_{\infty} \leq 2\sum \limits_{j=r+1}^{n_x}\sigma_j,
+\end{equation*}
+valid when $G_r$ is obtained with balanced reduction methods BT/BSP
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}{Example}
 
