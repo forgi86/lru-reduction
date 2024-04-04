@@ -149,7 +149,7 @@ Our paper included in the documentation of {\texttt{torchaudio.lfilter}}.
 \begin{figure}
 \includegraphics[scale=.5]{img/s4_architecture.pdf}
 \end{figure}
-Several strategies to make the LTI system simulation \structure{fast and efficient}.
+Focus on making the LTI system simulation/learning \structure{fast and well-posed}.
 \begin{itemize}
  	\item[\book]
  		\begin{tiny}
@@ -224,7 +224,20 @@ Reduction is often applied to systems in
 The states $x_2$ can be removed by:
 \begin{itemize}
 \item Truncation $\Rightarrow$ keep $(A_{11}, B_{1}, C_{1}, D)$
-\item Singular perturbation $\Rightarrow$ solve $x_{2}(k) = x_{2}(k-1)$
+\item Singular perturbation $\Rightarrow$ solve for $x_{2}(k) = x_{2}(k-1)$
+%\begin{small}
+%\begin{align*}
+%    A_r &= A_{11} + A_{12}(I - A_{22})^{-1}A_{21}\\
+%    B_r &= B_1 + A_{12} (I - A_{22})^{-1} B_2 \\
+%    C_r &= C_1 + C_2 (I - A_{22})^{-1} A_{21} \\
+%    D_r &= C_2 (I - A_{22})^{-1} B_2 + D.
+%\end{align*}
+%\end{small}
+%\begin{footnotesize}
+%$$
+%    (A_{11} + A_{12}(I - A_{22})^{-1}A_{21}, B_1 + A_{12} (I - A_{22})^{-1} B_2, C_1 + C_2 (I - A_{22})^{-1} A_{21}, C_2 (I - A_{22})^{-1} B_2 + D).
+%$$
+%\end{footnotesize}
 \end{itemize}
 \vskip 1em
 \pause
@@ -236,8 +249,9 @@ We tested all combinations for LRU simplification: MT, MSP, BT, BSP.
 \item Modal reduction is almost directly applicable to the LRU, which is already in modal (diagonal) form.
 \begin{enumerate}
 \item Sort system $(A_D, B, C, D)$ for decreasing eigenvalues magnitude
-\item Eliminate fastest states
+\item Eliminate fastest modes
 \end{enumerate}
+\vskip 1em
 \item Balanced reduction techniques require a \structure{three-step} procedure:
 \begin{enumerate}
 \item Balance $(A_D, B, C, D)$ to a non-diagonal $(A_b, B_b, C_d, D)$
@@ -289,13 +303,16 @@ Regularization introduced to enhance the MOR:
 \begin{frame}{Hankel nuclear norm minimization}
 Let us denote as $G$ and $G_r$ the original and reduced system.\\
 \begin{itemize}
-\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of $G$ (minimium realization order)
-\item The choice of HNN regularization is justified by the bound:
+\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of $G$ (minimium realization order). 
+\item The choice of HNN regularization is further motivated by the bound:
 \begin{equation*}
 \norm{G-G_r}_{\infty} \leq 2\sum \limits_{j=r+1}^{n_x}\sigma_j,
 \end{equation*}
 valid when $G_r$ is obtained with balanced reduction methods BT/BSP
 \end{itemize}
+\pause
+\vskip 2em
+If we push some HSVs of $G$ towards zero, we can then then find an (almost) equivalent reduced  $G_r$ with balanced reduction methods!
 \end{frame}
 
 
@@ -416,6 +433,24 @@ Performance of all regularizers/model order reduction techniques assessed.
 \begin{itemize}
 \item Best results with Hankel nuclear norm + balanced singular perturbation and modal $\ell_1$ + modal singular perturbation 
 \item Without regularization, MOR is significantly less effective
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusions \& future research}
+Preliminary efforts to improve deep SSMs with System Theoretic tools.
+\vskip 1em
+\pause
+Future research:
+\begin{itemize}
+\item More extensive simulations (e.g., effect of the regularization strength)
+\item Other model order reduction (e.g., Kyrilov-based) and regularizers
+\item Application to other models where LTI blocks are key, e.g.
+\begin{itemize}
+\item Koopman-based
+\item dynoNet
+\item Other deep SSMs
+\end{itemize}
+%\item Application to the same ML benchmarks where SSMs were introduced
 \end{itemize}
 \end{frame}
 
