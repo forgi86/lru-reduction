@@ -55,12 +55,16 @@ Growing interest within the machine-learning community. They dominate \structure
 \item The architecture should \structure{ring a bell} to sysid researchers.
 \end{itemize}
 
+\only<1>{
+\vskip 7em
+}
+\only<2->{
 \vskip 1em
 The classic \structure{block-oriented} modeling framework.
 \begin{columns}
 \column{.2\textwidth}
  \begin{figure}
- \footnotesize Wiener
+ \footnotesize  Wiener
  \vskip .5em
  \includegraphics[width=\textwidth]{img/wiener.pdf}
  \end{figure}
@@ -85,10 +89,11 @@ The classic \structure{block-oriented} modeling framework.
  									Block-oriented nonlinear system identification. \emph{Springer}, 2010
  		\end{tiny}					
 \end{itemize}
+}
 \end{frame}
 
 \begin{frame}[fragile]{The dynoNet architecture}
-LTI blocks for deep learning in our 2021 \structure{dynoNet} architecture
+LTI blocks for deep learning also in our 2021 \structure{dynoNet} architecture
 \vskip 1em
 \begin{columns}
  \column{.5\textwidth}
@@ -120,7 +125,7 @@ def model(in_data):
 \end{lstlisting}
 \end{tiny}
 \end{columns}
-\vskip 2em
+\vskip 1.5em
 %It enables training of arbitrary linear/non-linear combinations.
 % \vskip 1em 
 
@@ -133,11 +138,15 @@ def model(in_data):
  									\emph{International Journal of Adaptive Control and Signal Processing}, 2021
  		\end{tiny}
 \end{itemize}
-\structure{Differentiable transfer functions} are now also in the \href{https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html}{\texttt{torchaudio}} library. \\
-Our paper included in the documentation of {\texttt{torchaudio.lfilter}}.
+\only<1>{\vskip 4em}
+\only<2->{
+\structure{Differentiable transfer functions} are now also in the \href{https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html}{\texttt{torchaudio}} library. 
+%\\
+%dynoNet included in the documentation of {\texttt{torchaudio.lfilter}}.
 \begin{itemize}
  	\item[\book]{\begin{tiny}https://pytorch.org/audio/main/generated/torchaudio.functional.lfilter.html\end{tiny}}					
 \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Deep Structured State-Space Model Architecture}
@@ -149,7 +158,7 @@ Our paper included in the documentation of {\texttt{torchaudio.lfilter}}.
 \begin{figure}
 \includegraphics[scale=.5]{img/s4_architecture.pdf}
 \end{figure}
-Focus on making the LTI system simulation/learning \structure{fast and well-posed}.
+Focus on making the LTI system   learning \structure{fast and well-posed}.
 \begin{itemize}
  	\item[\book]
  		\begin{tiny}
@@ -217,14 +226,14 @@ Consider a LTI state-space system partitioned as:
 \end{align*}
 Reduction is often applied to systems in 
 \begin{itemize}
-\item Modal form ($A$ diagonal, states sorted from slowest to fastest)
-\item Balanced form (states sorted for decreasing Hankel singular values)
+\item \textbf{M}odal form ($A$ diagonal, states sorted from slowest to fastest)
+\item \textbf{B}alanced form (states sorted for decreasing Hankel singular values)
 \end{itemize}
 \pause
 The states $x_2$ can be removed by:
 \begin{itemize}
-\item Truncation $\Rightarrow$ keep $(A_{11}, B_{1}, C_{1}, D)$
-\item Singular perturbation $\Rightarrow$ solve for $x_{2}(k) = x_{2}(k-1)$
+\item \textbf{T}runcation $\Rightarrow$ keep $(A_{11}, B_{1}, C_{1}, D)$
+\item \textbf{S}ingular perturbation $\Rightarrow$ solve for $x_{2}(k) = x_{2}(k-1)$
 %\begin{small}
 %\begin{align*}
 %    A_r &= A_{11} + A_{12}(I - A_{22})^{-1}A_{21}\\
@@ -241,7 +250,7 @@ The states $x_2$ can be removed by:
 \end{itemize}
 \vskip 1em
 \pause
-We tested all combinations for LRU simplification: MT, MSP, BT, BSP.
+We tested all combinations: MT, MSP, BT, BSP.
 \end{frame}
 
 \begin{frame}{Model Order Reduction}
@@ -266,7 +275,7 @@ Regularization introduced to enhance the MOR:
 \begin{align*}
 \hat{\theta} =  \arg\min_{\theta \in \Theta}  & \frac{1}{N}\sum_{k=1}^N \left(y_k - \hat{y}_k(\theta) \right)^2 +  \gamma \mathcal{R}(\theta),  
 \end{align*}
-
+\vskip -1.0em
 \begin{columns}
 \column{.48\textwidth}
 \begin{block}{Modal $\ell_1$}
@@ -274,12 +283,11 @@ Regularization introduced to enhance the MOR:
     \mathcal{R}(\theta) = \sum_{j=1}^{n_x} |\lambda_j|
 \end{equation*}
 \begin{itemize}
-\item Push some modes towards 0
+\item Push some modes $\lambda_j$ towards 0
 %\item Rationale: fast modes can often be neglected
 \item Tailored for modal reduction MT/MSP
 %\item Directly applicable
 \end{itemize}
-
 \end{block}
 \column{.48\textwidth}
 \begin{block}{Hankel nuclear norm (HNN)} 
@@ -287,23 +295,24 @@ Regularization introduced to enhance the MOR:
 	\mathcal{R}(\theta) = \sum_{j=1}^{n_x} \sigma_j
 \end{equation*}
 \begin{itemize}
-\item Push some HSV  towards 0
+\item Push some HSV $\sigma_j$  towards 0
 \item Tailored for balanced reduction BT/BSP
 %\item Directly applicable
 \end{itemize}
 \end{block}
 \end{columns}
+\vskip .5em
+\pause
 \begin{itemize}
-\vskip 1em
-\item Modal $\ell_1$ efficient ($\lambda_j$ are on the diagonal)
-\item HNN also efficient exploiting diagonal $A_D$ for HSV computation
+\item Modal $\ell_1$ efficient ($\lambda_j$ are on the diagonal of $A_D$)
+\item HNN also efficient exploiting diagonal $A_D$ structure\dots
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Hankel nuclear norm minimization}
-Let us denote as $G$ and $G_r$ the original and reduced system.\\
+%Let us denote as $G$ and $G_r$ the original and reduced system.\\
 \begin{itemize}
-\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of $G$ (minimium realization order). 
+\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of a linear system $G$ (minimium realization order). 
 \item The choice of HNN regularization is further motivated by the bound:
 \begin{equation*}
 \norm{G-G_r}_{\infty} \leq 2\sum \limits_{j=r+1}^{n_x}\sigma_j,
@@ -318,22 +327,74 @@ If we push some HSVs of $G$ towards zero, we can then then find an (almost) equi
 
 \begin{frame}{Example}
 
-Experiments on the F16 ground vibration \href{https://research.tue.nl/en/datasets/f-16-aircraft-benchmark-based-on-ground-vibration-test-data}{benchmark}. Deep LRU with
+Experiments on the F16 ground vibration \href{https://research.tue.nl/en/datasets/f-16-aircraft-benchmark-based-on-ground-vibration-test-data}{benchmark}. 
 \vskip 1em
 \begin{columns}
-\column{.6\textwidth}
+\column{.45\textwidth}
+Deep LRU with:
 \begin{itemize}
  \item $n_{\rm layers}=6$  layers
  \item $n_x=100$ states per layer
  \item $d_{\rm model}=50$ units per layer
  \item Layer Normalization
  \item MLP non-linearity
+
 \end{itemize}
-\column{.4\textwidth}
-\includegraphics[scale=.5]{img/lru_architecture.pdf}
+\column{.55\textwidth}
+\begin{center}
+\includegraphics[scale=.7]{img/lru_architecture.pdf}
+\end{center}
 \end{columns}
-\vskip .2em
-Results on test set \texttt{FullMSine\_Level6\_Validation}
+%\vskip .2em
+%Results on test set \texttt{FullMSine\_Level6\_Validation}
+%\begin{table}[ht]
+%\centering
+%%\captionsetup{justification=centering} % Centering captions
+%\small % Reduced font size
+%\setlength{\tabcolsep}{4pt} % Reduced column padding
+%\adjustbox{scale=0.7}{
+%\begin{tabular}{@{}l*{9}{c}@{}} % Adjusting column alignment
+%\toprule
+%\multirow{2}{*}{Regularization} & \multicolumn{3}{c}{Channel 1} & \multicolumn{3}{c}{Channel 2} & \multicolumn{3}{c}{Channel 3} \\
+%\cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+%& {\emph{fit}} & {RMSE} & {NRMSE} & {\emph{fit}} & {RMSE} & {NRMSE} & {\emph{fit}} & {RMSE} & {NRMSE} \\
+%\midrule
+%No reg. & 86.5 & 0.180 & 0.134 & 90.0 & 0.167 & 0.099  & 76.2 & 0.368 & 0.237 \\
+%Modal $\ell_1$ & 85.4 & 0.195 & 0.145 & 89.8 & 0.171 & 0.102 & 74.5 & 0.395 & 0.254 \\
+%Hankel norm & 85.8 & 0.190 & 0.142 & 89.0 & 0.185 & 0.110 & 75.5 & 0.379 & 0.245 \\
+%\bottomrule
+%\end{tabular}
+%}
+%\caption{Performance of the SSM trained with different regularization methods.}
+%\end{table}
+%\vskip .2em
+%\pause
+%In line with literature. Regularization has a large effect on the LTI blocks!
+\vskip 2em
+\begin{itemize}
+\item[\github] \url{https://github.com/forgi86/lru-reduction}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Nominal results}
+\begin{columns}
+\column{.5\textwidth}
+Training repeated with:
+\begin{itemize}
+ \item No regularization
+ \item Modal $\ell_1$ regularization
+ \item Hankel norm regularization.
+\end{itemize}
+
+\column{.5\textwidth}
+\begin{center}
+\includegraphics[scale=.5]{img/lru_architecture.pdf}
+\end{center}
+\end{columns}
+
+\pause
+\vskip 1em
+Results on test set \texttt{FullMSine\_Level6\_Validation}:
 \begin{table}[ht]
 \centering
 %\captionsetup{justification=centering} % Centering captions
@@ -354,9 +415,11 @@ Hankel norm & 85.8 & 0.190 & 0.142 & 89.0 & 0.185 & 0.110 & 75.5 & 0.379 & 0.245
 }
 %\caption{Performance of the SSM trained with different regularization methods.}
 \end{table}
+
 %\vskip .2em
-\pause
+%\pause
 In line with literature. Regularization has a large effect on the LTI blocks!
+
 \end{frame}
 
 \begin{frame}
@@ -437,13 +500,15 @@ Performance of all regularizers/model order reduction techniques assessed.
 \end{frame}
 
 \begin{frame}{Conclusions \& future research}
-Preliminary efforts to improve deep SSMs with System Theoretic tools.
+Preliminary efforts to improve deep SSMs with System Theoretic tools.\\
+MOR + tailor-made regularization to reduce state dimensionality.
 \vskip 1em
 \pause
 Future research:
 \begin{itemize}
 \item More extensive simulations (e.g., effect of the regularization strength)
 \item Other model order reduction (e.g., Kyrilov-based) and regularizers
+\item Reduction also of layers and channels
 \item Application to other models where LTI blocks are key, e.g.
 \begin{itemize}
 \item Koopman-based
