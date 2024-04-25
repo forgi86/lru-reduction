@@ -295,7 +295,9 @@ Regularization introduced to enhance the MOR:
 \begin{frame}{Hankel nuclear norm minimization}
 %Let us denote as $G$ and $G_r$ the original and reduced system.\\
 \begin{itemize}
-\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of a linear system $G$ (minimium realization order). 
+\item  Minimium realization order of a linear system $G$ =  rank of the ($\infty$-dimensional) Hankel operator $H$.
+\item To obtain lower order models: we can minimize the rank of $H$, however, rank minimization is hard to solve! 
+\item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is often used as  a convex surrogate of the rank of of $H$. 
 \item The choice of HNN regularization is further motivated by the bound:
 \begin{equation*}
 \norm{G-G_r}_{\mathcal{H}_\infty} \leq 2\sum \limits_{j=r+1}^{n_x}\sigma_j,
