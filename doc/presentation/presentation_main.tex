@@ -172,7 +172,7 @@ Our idea: bring in \structure{model order reduction} to simplify these architect
 \end{frame}
 
 
-\begin{frame}{Deep Linear Recurrent Units}
+\begin{frame}{Deep Linear Recurrent Unit}
 We consider the deep LRU architecture recently introduced by DeepMind:
 \begin{itemize}
  	\item[\book]
@@ -200,7 +200,6 @@ $$A_D = \textrm{diag}(\lambda_1, \lambda_2, \dots, \lambda_{n_x})$$
 \item $\mathcal{O}(N)$ sequential ops (standard recursion) 
 \item $N$ \structure{parallel} jobs, $\mathcal{O}(\log N)$ ops each \structure{(parallel scan)}
 \end{itemize}
-\item SOTA on long-range sequences
 \end{itemize}
 \end{columns}
 \vskip 1em
@@ -224,16 +223,10 @@ Consider a LTI state-space system partitioned as:
     \end{bmatrix} + \begin{bmatrix}B_1\\B_2 \end{bmatrix} u(k), \\
     y(k) &= \begin{bmatrix}C_1\;\; C_2\end{bmatrix} \begin{bmatrix}x_{1}(k)\\ x_{2}(k) \end{bmatrix} + D u(k),
 \end{align*}
-Reduction is often applied to systems in 
-\begin{itemize}
-\item \textbf{M}odal form ($A$ diagonal, states sorted from slowest to fastest)
-\item \textbf{B}alanced form (states sorted for decreasing Hankel singular values)
-\end{itemize}
-\pause
 The states $x_2$ can be removed by:
 \begin{itemize}
 \item \textbf{T}runcation $\Rightarrow$ keep $(A_{11}, B_{1}, C_{1}, D)$
-\item \textbf{S}ingular perturbation $\Rightarrow$ solve for $x_{2}(k) = x_{2}(k-1)$
+\item \textbf{S}ingular \textbf{P}erturbation $\Rightarrow$ solve for $x_{2}(k) = x_{2}(k-1)$
 %\begin{small}
 %\begin{align*}
 %    A_r &= A_{11} + A_{12}(I - A_{22})^{-1}A_{21}\\
@@ -248,32 +241,22 @@ The states $x_2$ can be removed by:
 %$$
 %\end{footnotesize}
 \end{itemize}
+\pause
+Reduction is often applied to systems in 
+\begin{itemize}
+\item \textbf{M}odal form ($A$ diagonal, states sorted from slowest to fastest)
+\item \textbf{B}alanced form (states sorted for decreasing Hankel singular values)
+\end{itemize}
+%\pause
 \vskip 1em
 \pause
 We tested all combinations: MT, MSP, BT, BSP.
 \end{frame}
 
-\begin{frame}{Model Order Reduction}
-\begin{itemize}
-\item Modal reduction is almost directly applicable to the LRU, which is already in modal (diagonal) form.
-\begin{enumerate}
-\item Sort system $(A_D, B, C, D)$ for decreasing eigenvalues magnitude
-\item Eliminate fastest modes
-\end{enumerate}
-\vskip 1em
-\item Balanced reduction techniques require a \structure{three-step} procedure:
-\begin{enumerate}
-\item Balance $(A_D, B, C, D)$ to a non-diagonal $(A_b, B_b, C_d, D)$
-\item Reduce $(A_b, B_b, C_b, D)$ to a non-diagonal $(A_r, B_r, C_r, D)$
-\item Diagonalize $(A_r, B_r, C_r, D)$ to fit the LRU structure
-\end{enumerate}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Regularization}
+\begin{frame}{Regularization for MOR}
 Regularization introduced to enhance the MOR:
 \begin{align*}
-\hat{\theta} =  \arg\min_{\theta \in \Theta}  & \frac{1}{N}\sum_{k=1}^N \left(y_k - \hat{y}_k(\theta) \right)^2 +  \gamma \mathcal{R}(\theta),  
+\theta^* =  \arg\min_{\theta \in \Theta}  & \frac{1}{N}\sum_{k=1}^N \left(y_k - \hat{y}_k(\theta) \right)^2 +  \gamma \mathcal{R}(\theta),  
 \end{align*}
 \vskip -1.0em
 \begin{columns}
@@ -315,7 +298,7 @@ Regularization introduced to enhance the MOR:
 \item The HNN $\sum_{j=1}^{n_x} \sigma_j$ is a convex approximation to the McMillan degree of a linear system $G$ (minimium realization order). 
 \item The choice of HNN regularization is further motivated by the bound:
 \begin{equation*}
-\norm{G-G_r}_{\infty} \leq 2\sum \limits_{j=r+1}^{n_x}\sigma_j,
+\norm{G-G_r}_{\mathcal{H}_\infty} \leq 2\sum \limits_{j=r+1}^{n_x}\sigma_j,
 \end{equation*}
 valid when $G_r$ is obtained with balanced reduction methods BT/BSP
 \end{itemize}
@@ -470,7 +453,7 @@ In line with literature. Regularization has a large effect on the LTI blocks!
 
 
 \begin{frame}{Model Order Reduction}
-Performance of all regularizers/model order reduction techniques assessed.
+Performance of all Regularization/Reduction combinations assessed.
 \vskip 2em
 \begin{columns}
 \column{.5\textwidth}
@@ -480,7 +463,7 @@ Performance of all regularizers/model order reduction techniques assessed.
     \centering
     \begin{tabular}{@{}lllll@{}}
     \toprule
-    & \multicolumn{4}{c}{Truncation Method} \\ \cmidrule(lr){2-5}
+    & \multicolumn{4}{c}{Reduction Method} \\ \cmidrule(lr){2-5}
     Regularization Method & BT & BSP & MT & MSP \\ \midrule
     No Regularization & 28 & 43 & 3 & 35 \\
     Modal $\ell_1$& 56 & 73 & 0 & \textbf{91} \\
@@ -532,5 +515,22 @@ Future research:
 %\newcounter{finalframe}
 %\setcounter{finalframe}{\value{framenumber}}
 %\setcounter{framenumber}{\value{finalframe}}
-	
+
+\begin{frame}{Model Order Reduction}
+\begin{itemize}
+\item Modal reduction is almost directly applicable to the LRU, which is already in modal (diagonal) form.
+\begin{enumerate}
+\item Sort system $(A_D, B, C, D)$ for decreasing eigenvalues magnitude
+\item Eliminate fastest modes
+\end{enumerate}
+\vskip 1em
+\item Balanced reduction techniques require a \structure{three-step} procedure:
+\begin{enumerate}
+\item Balance $(A_D, B, C, D)$ to a non-diagonal $(A_b, B_b, C_d, D)$
+\item Reduce $(A_b, B_b, C_b, D)$ to a non-diagonal $(A_r, B_r, C_r, D)$
+\item Diagonalize $(A_r, B_r, C_r, D)$ to fit the LRU structure
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
 \end{document}
