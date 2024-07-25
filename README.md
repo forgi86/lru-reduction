@@ -1,7 +1,7 @@
 # Model order reduction of deep structured state-space models: A system-theoretic approach
 
 This repository contains the Python code to reproduce the results of the paper [Model order reduction of deep structured state-space models: A system-theoretic approach](https://arxiv.org/abs/2403.14833)
-by Marco Forgione, Manas Mejari, and Dario Piga.
+by Marco Forgione, Manas Mejari, and Dario Piga [(CDC 2024, Milano, IT)](https://cdc2024.ieeecss.org/).
 
 
 ## Linear Recurrent Unit
