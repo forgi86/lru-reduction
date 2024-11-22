@@ -51,7 +51,7 @@ The main files are:
 * [test_MOR.ipynb](examples/f16/test_MOR.ipynb): Testing with MOR (user-given order)
 * [run_MOR_all.ipynb](examples/f16/run_MOR_all.ipynb): Sweep all model orders for all combinations of regularizers and MOR techniques
  
-The training script uses [hydra](https://hydra.cc/docs/intro/) to handle different configuragion. For instance, the model trained with Hankel nuclear norm minimization
+The training script uses [hydra](https://hydra.cc/docs/intro/) to handle experiment configurations. For instance, the model trained with Hankel nuclear norm minimization
 
 ```
 python train.py +experiment=larg_reg_hankel
